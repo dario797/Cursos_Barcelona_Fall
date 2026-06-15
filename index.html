@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cursos CASA Barcelona — Valoraciones Fall 2025</title>
+  <title>Cursos CASA Barcelona. Valoraciones Fall </title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #ffffff;
-      --bg-secondary: #f5f5f3;
+      --bg: #f8f9fa;
+      --bg-card: #ffffff;
       --text: #1a1a18;
       --text-secondary: #6b6b67;
       --border: rgba(0,0,0,0.12);
@@ -20,12 +20,49 @@
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #1e1e1c;
-        --bg-secondary: #2a2a28;
+        --bg: #121212;
+        --bg-card: #1e1e1e;
         --text: #f0efe8;
-        --text-secondary: #999992;
         --border: rgba(255,255,255,0.1);
-        --border-md: rgba(255,255,255,0.22);
+
+        body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    padding: 40px; /* Margen alrededor de la página */
+  }
+
+  /* Estilo para las tarjetas de los cursos */
+  .curso-card {
+    background-color: var(--bg-card); /* Usa el blanco */
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 16px;
+    
+    /* La sombra sutil que comentamos */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    
+    /* Transición suave para el efecto Hover */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  /* Efecto cuando pasas el ratón por encima de la tarjeta */
+  .curso-card:hover {
+    transform: translateY(-2px); /* Se eleva un poquito */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08); /* Sombra más marcada */
+  }
+
+  /* Estilo para los Badges (UPF, UB) */
+  .badge-univ {
+    padding: 4px 8px;
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    font-weight: 600;
+    background-color: rgba(0, 100, 200, 0.1); /* Fondo azul clarito traslúcido */
+    color: #0056b3; /* Texto azul oscuro */
+  }
+</style>
       }
       .badge-blue { background: #0C447C !important; color: #B5D4F4 !important; }
       .badge-teal { background: #085041 !important; color: #9FE1CB !important; }
