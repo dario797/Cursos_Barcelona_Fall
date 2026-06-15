@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cursos — Notas y comentarios de estudiantes</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff;
+      --bg-secondary: #f5f5f3;
+      --text: #1a1a18;
+      --text-secondary: #6b6b67;
+      --border: rgba(0,0,0,0.12);
+      --border-md: rgba(0,0,0,0.22);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1e1e1c;
+        --bg-secondary: #2a2a28;
+        --text: #f0efe8;
+        --text-secondary: #999992;
+        --border: rgba(255,255,255,0.1);
+        --border-md: rgba(255,255,255,0.22);
+      }
+      .badge-blue { background: #0C447C !important; color: #B5D4F4 !important; }
+      .badge-teal { background: #085041 !important; color: #9FE1CB !important; }
+      .badge-amber { background: #633806 !important; color: #FAC775 !important; }
+      .badge-coral { background: #712B13 !important; color: #F5C4B3 !important; }
+      .badge-purple { background: #3C3489 !important; color: #CECBF6 !important; }
+      .badge-pink { background: #72243E !important; color: #F4C0D1 !important; }
+      .av-blue { background: #0C447C !important; color: #B5D4F4 !important; }
+      .av-teal { background: #085041 !important; color: #9FE1CB !important; }
+      .av-amber { background: #633806 !important; color: #FAC775 !important; }
+      .av-coral { background: #712B13 !important; color: #F5C4B3 !important; }
+      .av-purple { background: #3C3489 !important; color: #CECBF6 !important; }
+      .av-pink { background: #72243E !important; color: #F4C0D1 !important; }
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg-secondary);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+    .subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 1.5rem; }
+    .top-bar { display: flex; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .top-bar input, .top-bar select {
+      flex: 1; min-width: 150px; height: 38px; font-size: 14px;
+      border: 0.5px solid var(--border-md);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      color: var(--text);
+      padding: 0 12px;
+      outline: none;
+    }
+    .top-bar input:focus, .top-bar select:focus { border-color: #378ADD; box-shadow: 0 0 0 2px rgba(55,138,221,0.15); }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
+    .stat { background: var(--bg); border-radius: var(--radius-md); padding: 12px 16px; border: 0.5px solid var(--border); }
+    .stat-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .stat-value { font-size: 22px; font-weight: 500; }
+    .course-list { display: flex; flex-direction: column; gap: 8px; }
+    .course-card {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    .course-card:hover { border-color: var(--border-md); }
+    .course-card.open { border-color: rgba(55,138,221,0.5); }
+    .course-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; cursor: pointer; user-select: none;
+    }
+    .course-badge { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: var(--radius-md); white-space: nowrap; }
+    .badge-blue { background: #E6F1FB; color: #0C447C; }
+    .badge-teal { background: #E1F5EE; color: #085041; }
+    .badge-amber { background: #FAEEDA; color: #633806; }
+    .badge-coral { background: #FAECE7; color: #712B13; }
+    .badge-purple { background: #EEEDFE; color: #3C3489; }
+    .badge-pink { background: #FBEAF0; color: #72243E; }
+    .course-name { flex: 1; font-size: 15px; font-weight: 500; }
+    .course-meta { display: flex; align-items: center; gap: 14px; }
+    .nota-pill { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+    .nota-num { font-weight: 500; font-size: 17px; }
+    .nota-num.alta { color: #0F6E56; }
+    .nota-num.media { color: #BA7517; }
+    .nota-num.baja { color: #A32D2D; }
+    .stars { color: #EF9F27; font-size: 13px; letter-spacing: 1px; }
+    .n-comments { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+    .chevron { font-size: 16px; color: var(--text-secondary); transition: transform 0.2s; }
+    .open .chevron { transform: rotate(180deg); }
+    .course-body { border-top: 0.5px solid var(--border); padding: 16px; display: none; }
+    .open .course-body { display: block; }
+    .comments-list { display: flex; flex-direction: column; gap: 10px; }
+    .comment { padding: 12px 14px; background: var(--bg-secondary); border-radius: var(--radius-md); }
+    .comment-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
+    .av-blue { background: #B5D4F4; color: #042C53; }
+    .av-teal { background: #9FE1CB; color: #04342C; }
+    .av-amber { background: #FAC775; color: #412402; }
+    .av-coral { background: #F5C4B3; color: #4A1B0C; }
+    .av-purple { background: #CECBF6; color: #26215C; }
+    .av-pink { background: #F4C0D1; color: #4B1528; }
+    .comment-author { font-size: 13px; font-weight: 500; }
+    .comment-nota { font-size: 12px; color: var(--text-secondary); margin-left: auto; }
+    .comment-text { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
+    .empty { text-align: center; padding: 2.5rem; color: var(--text-secondary); font-size: 14px; }
+    @media (max-width: 500px) {
+      .course-meta .n-comments { display: none; }
+      .course-name { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cursos — notas y comentarios</h1>
+    <p class="subtitle">Haz clic en un curso para ver la nota media y las opiniones de otros estudiantes.</p>
+
+    <div class="top-bar">
+      <input type="text" id="search" placeholder="Buscar curso..." oninput="render()" />
+      <select id="area-filter" onchange="render()">
+        <option value="">Todas las áreas</option>
+      </select>
+      <select id="sort" onchange="render()">
+        <option value="name">Ordenar: A-Z</option>
+        <option value="nota-desc">Nota: mayor primero</option>
+        <option value="nota-asc">Nota: menor primero</option>
+        <option value="comments">Más comentarios</option>
+      </select>
+    </div>
+
+    <div class="stats-row" id="stats"></div>
+    <div class="course-list" id="list"></div>
+  </div>
+
+  <script>
+  const COURSES = [
+    { id:1, name:"Introducción a la programación", area:"Tecnología", badge:"badge-blue", comments:[
+      { name:"Ana G.", av:"av-blue", nota:8.5, text:"Muy bien estructurado, perfecto para empezar desde cero." },
+      { name:"Luis M.", av:"av-teal", nota:9, text:"El profesor explica con mucha claridad. Recomendado." },
+      { name:"Sofía P.", av:"av-coral", nota:7, text:"Buen contenido pero el ritmo es algo rápido al final." },
+      { name:"David R.", av:"av-purple", nota:8, text:"Los ejercicios prácticos son lo mejor del curso." }
+    ]},
+    { id:2, name:"Diseño gráfico avanzado", area:"Diseño", badge:"badge-purple", comments:[
+      { name:"Marta L.", av:"av-purple", nota:9.5, text:"Brutal. Aprendí técnicas que no encontré en ningún otro lado." },
+      { name:"Carlos V.", av:"av-blue", nota:8, text:"Material muy actualizado, se nota que el profesor está al día." },
+      { name:"Elena S.", av:"av-pink", nota:9, text:"Las correcciones individuales son un punto muy a favor." }
+    ]},
+    { id:3, name:"Marketing digital", area:"Negocios", badge:"badge-amber", comments:[
+      { name:"Pablo T.", av:"av-amber", nota:7.5, text:"Contenido útil pero algo denso. Mejor ir despacio." },
+      { name:"Irene B.", av:"av-coral", nota:6.5, text:"Esperaba más casos prácticos actuales." },
+      { name:"Jorge N.", av:"av-teal", nota:8, text:"Los módulos de redes sociales son excelentes." },
+      { name:"Laura F.", av:"av-blue", nota:7, text:"Bien, aunque algunos vídeos se podrían actualizar." }
+    ]},
+    { id:4, name:"Estadística aplicada", area:"Ciencia de datos", badge:"badge-teal", comments:[
+      { name:"Rafa C.", av:"av-teal", nota:9, text:"Muy riguroso, ideal si tienes base matemática." },
+      { name:"Nuria H.", av:"av-blue", nota:5, text:"Demasiado teórico para mi nivel de entrada." },
+      { name:"Tomás J.", av:"av-amber", nota:8.5, text:"Los notebooks de Python son geniales para practicar." }
+    ]},
+    { id:5, name:"Inglés de negocios", area:"Idiomas", badge:"badge-coral", comments:[
+      { name:"Beatriz A.", av:"av-coral", nota:8, text:"Muy enfocado en situaciones reales, eso se agradece." },
+      { name:"Sergio P.", av:"av-teal", nota:9, text:"Los role-plays con hablantes nativos son lo mejor." },
+      { name:"Clara M.", av:"av-pink", nota:8.5, text:"Buen ritmo y materiales de calidad." }
+    ]},
+    { id:6, name:"Gestión de proyectos Agile", area:"Negocios", badge:"badge-amber", comments:[
+      { name:"Mario E.", av:"av-amber", nota:8, text:"Muy práctico. Lo puse en marcha en mi empresa al terminar." },
+      { name:"Patricia V.", av:"av-purple", nota:9, text:"Explica Scrum y Kanban de forma muy clara." }
+    ]},
+    { id:7, name:"Fotografía y edición", area:"Diseño", badge:"badge-purple", comments:[
+      { name:"Óscar L.", av:"av-purple", nota:9.5, text:"El mejor curso que he hecho en mucho tiempo." },
+      { name:"Daniela R.", av:"av-pink", nota:8, text:"Me encantaron los módulos de Lightroom." },
+      { name:"Andrés T.", av:"av-amber", nota:9, text:"Muy completo, desde lo básico hasta edición avanzada." }
+    ]},
+    { id:8, name:"Contabilidad para no financieros", area:"Negocios", badge:"badge-amber", comments:[
+      { name:"Sara N.", av:"av-coral", nota:7, text:"Explica bien pero algunos temas se quedan cortos." },
+      { name:"Miguel C.", av:"av-blue", nota:8, text:"Muy útil si no tienes formación financiera previa." }
+    ]},
+    { id:9, name:"Machine Learning con Python", area:"Ciencia de datos", badge:"badge-teal", comments:[
+      { name:"Eva M.", av:"av-teal", nota:9, text:"Contenido muy actualizado. Los proyectos finales, sobresalientes." },
+      { name:"Álvaro B.", av:"av-blue", nota:8.5, text:"Buena progresión, aunque hay que tener base en Python." },
+      { name:"Rocío S.", av:"av-purple", nota:7, text:"Me faltaron más explicaciones en los algoritmos complejos." }
+    ]},
+    { id:10, name:"Oratoria y presentaciones", area:"Habilidades", badge:"badge-pink", comments:[
+      { name:"Fernando O.", av:"av-pink", nota:9, text:"Transformador. En serio, cambió cómo me expreso en público." },
+      { name:"Lucía P.", av:"av-coral", nota:8.5, text:"Las sesiones de feedback en vídeo son muy valiosas." }
+    ]},
+    { id:11, name:"Excel avanzado", area:"Tecnología", badge:"badge-blue", comments:[
+      { name:"Roberto A.", av:"av-blue", nota:8, text:"Fórmulas y macros explicados con mucha paciencia." },
+      { name:"Noemí G.", av:"av-teal", nota:9, text:"Cambió completamente mi forma de trabajar con datos." },
+      { name:"Hugo F.", av:"av-amber", nota:7.5, text:"Muy completo, aunque las macros podrían ir más despacio." }
+    ]},
+    { id:12, name:"Nutrición y salud", area:"Bienestar", badge:"badge-coral", comments:[
+      { name:"Inés C.", av:"av-coral", nota:9, text:"Información muy práctica y respaldada en evidencia." },
+      { name:"Joel M.", av:"av-teal", nota:8.5, text:"Me ayudó a replantear mis hábitos alimenticios." }
+    ]},
+    { id:13, name:"Liderazgo y gestión de equipos", area:"Habilidades", badge:"badge-pink", comments:[
+      { name:"Rosa B.", av:"av-pink", nota:8, text:"Herramientas muy aplicables al día a día." },
+      { name:"Carlos D.", av:"av-purple", nota:7.5, text:"Interesante, aunque algo genérico en algunos módulos." },
+      { name:"Ana T.", av:"av-blue", nota:9, text:"El módulo de feedback constructivo es excepcional." }
+    ]},
+    { id:14, name:"Desarrollo web con React", area:"Tecnología", badge:"badge-blue", comments:[
+      { name:"Daniel S.", av:"av-blue", nota:9.5, text:"Proyectos reales desde el día uno. Sin relleno." },
+      { name:"Mía R.", av:"av-teal", nota:8.5, text:"Ideal para dar el salto de HTML/CSS a frameworks." },
+      { name:"Kevin L.", av:"av-purple", nota:9, text:"El código de los proyectos está muy bien explicado." }
+    ]},
+    { id:15, name:"Mindfulness y productividad", area:"Bienestar", badge:"badge-coral", comments:[
+      { name:"Sonia V.", av:"av-coral", nota:8.5, text:"Sencillo y efectivo. Muy recomendado para épocas de estrés." },
+      { name:"Jaime E.", av:"av-pink", nota:7.5, text:"Bien estructurado aunque podría ir algo más en profundidad." }
+    ]},
+    { id:16, name:"SQL para analistas", area:"Ciencia de datos", badge:"badge-teal", comments:[
+      { name:"Carmen F.", av:"av-teal", nota:9, text:"De cero a escribir queries complejas en pocas semanas." },
+      { name:"Víctor B.", av:"av-amber", nota:8, text:"Los ejercicios con bases de datos reales son imprescindibles." },
+      { name:"Alicia M.", av:"av-blue", nota:9.5, text:"El mejor curso de SQL que he encontrado." }
+    ]}
+  ];
+
+  function avg(c){ return c.comments.reduce((s,x)=>s+x.nota,0)/c.comments.length; }
+  function stars(n){ const f=Math.round(n/2); return "★".repeat(f)+"☆".repeat(5-f); }
+  function colorClass(n){ return n>=8?"alta":n>=6?"media":"baja"; }
+  function initials(name){ return name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase(); }
+
+  let openId = null;
+
+  function toggle(id){
+    openId = openId===id ? null : id;
+    render();
+  }
+
+  function render(){
+    const q = document.getElementById("search").value.toLowerCase();
+    const area = document.getElementById("area-filter").value;
+    const sort = document.getElementById("sort").value;
+
+    let list = COURSES.filter(c =>
+      (!q || c.name.toLowerCase().includes(q)) &&
+      (!area || c.area === area)
+    );
+
+    if(sort==="nota-desc") list.sort((a,b)=>avg(b)-avg(a));
+    else if(sort==="nota-asc") list.sort((a,b)=>avg(a)-avg(b));
+    else if(sort==="comments") list.sort((a,b)=>b.comments.length-a.comments.length);
+    else list.sort((a,b)=>a.name.localeCompare(b.name));
+
+    const globalAvg = (COURSES.reduce((s,c)=>s+avg(c),0)/COURSES.length).toFixed(1);
+    const totalComments = COURSES.reduce((s,c)=>s+c.comments.length,0);
+
+    document.getElementById("stats").innerHTML = `
+      <div class="stat"><div class="stat-label">Cursos</div><div class="stat-value">${COURSES.length}</div></div>
+      <div class="stat"><div class="stat-label">Nota media global</div><div class="stat-value">${globalAvg}</div></div>
+      <div class="stat"><div class="stat-label">Total opiniones</div><div class="stat-value">${totalComments}</div></div>
+      <div class="stat"><div class="stat-label">Mostrando</div><div class="stat-value">${list.length}</div></div>
+    `;
+
+    if(!list.length){
+      document.getElementById("list").innerHTML = `<div class="empty"><i class="ti ti-search" style="font-size:24px;display:block;margin-bottom:8px"></i>Sin resultados para esa búsqueda</div>`;
+      return;
+    }
+
+    document.getElementById("list").innerHTML = list.map(c => {
+      const a = avg(c);
+      const isOpen = openId===c.id;
+      return `<div class="course-card ${isOpen?"open":""}">
+        <div class="course-header" onclick="toggle(${c.id})" role="button" aria-expanded="${isOpen}" tabindex="0"
+          onkeydown="if(event.key==='Enter'||event.key===' ')toggle(${c.id})">
+          <span class="course-badge ${c.badge}">${c.area}</span>
+          <span class="course-name">${c.name}</span>
+          <div class="course-meta">
+            <div class="nota-pill">
+              <span class="stars">${stars(a)}</span>
+              <span class="nota-num ${colorClass(a)}">${a.toFixed(1)}</span>
+            </div>
+            <span class="n-comments"><i class="ti ti-message" style="font-size:14px;vertical-align:-1px;margin-right:3px"></i>${c.comments.length}</span>
+            <i class="ti ti-chevron-down chevron"></i>
+          </div>
+        </div>
+        <div class="course-body">
+          <div class="comments-list">
+            ${c.comments.map(cm=>`
+              <div class="comment">
+                <div class="comment-top">
+                  <div class="avatar ${cm.av}">${initials(cm.name)}</div>
+                  <span class="comment-author">${cm.name}</span>
+                  <span class="comment-nota"><span class="stars">${stars(cm.nota)}</span> ${cm.nota.toFixed(1)}</span>
+                </div>
+                <p class="comment-text">${cm.text}</p>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  const areas = [...new Set(COURSES.map(c=>c.area))].sort();
+  const sel = document.getElementById("area-filter");
+  areas.forEach(a=>{ const o=document.createElement("option"); o.value=a; o.textContent=a; sel.appendChild(o); });
+
+  render();
+  </script>
+</body>
+</html>
