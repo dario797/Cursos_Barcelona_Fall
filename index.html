@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cursos CASA Barcelona — Valoraciones Fall 2025</title>
+  <title>Cursos CASA Barcelona. Valoraciones y Notas </title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -144,7 +144,7 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>Cursos CASA Barcelona · Fall 2025</h1>
+    <h1>Cursos CASA Barcelona · Fall</h1>
     <p class="subtitle">Valoraciones y notas de estudiantes CASA. Haz clic en un curso para ver los detalles.</p>
   </div>
 
@@ -198,6 +198,7 @@ const COURSES = [
       { name: "Emma", av: "av-blue", text: "Me gusta mucho, profesor muy simpático. Todo es relevante, especialmente por mi carrera pre-med. Habla mucho sobre las diferencias entre sistemas de salud. Examen fácil. Lo recomendaría a cualquier persona.", nota_academica: 9.7 },
       { name: "Layla", av: "av-purple", text: "Me gusta el profesor, es una clase fácil. Es interesante.", nota_academica: 9 },
       { name: "Chloe", av: "av-coral", text: "Muy bien, profesor que entiende la situación y hace todo para favorecer la participación.", nota_academica: 9 }
+       { name: "Debora, UPenn", av: "av-purple", text: "Profesor muy simpático, muy comprensivo y accesible con los estudiantes internacionales. Contenido más de análisis y no de memorización, más práctico y por tanto fácil de tender.", nota_academica: 8.2 }
     ]
   },
   {
@@ -370,7 +371,19 @@ const COURSES = [
     comments: [
       { name: "Mia", av: "av-blue", text: "Me gusta, él es muy amigable. El curso es tipo lecture, y como evaluación se ha de diseñar un sitio web. No muy exigente.", nota_academica: 8.4 }
     ]
-  }
+  },
+   {
+    id: 16,
+    name: "Narrativa Española del Siglo XX",
+    code: "361084",
+    uni: "UB",
+    dept: "Filología Hispánica",
+    profesor: "Gemma Márquez",
+    grupo: "T1",
+    badge: "badge-pink",
+    comments: [
+      { name: "Debora, UPenn", av: "av-purple", text: "Muy simpática, aunque las primeras fueron algo difíciles por haber perdido las dos primeras clases. Clases algo específicas, poco introductorias. Importante leer las lecturas en el campus virtual. Habla muy rápido, pero se le entiende. Muy comprensiva con el examen. Las clases son entretenidas, contenido interesante, similar a cosas que hice en Penn.", nota_academica: 7.5 }
+    ]
 ];
 
 function avgNota(c){
